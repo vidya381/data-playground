@@ -11,12 +11,10 @@ import { ParseResult, DataFormat } from "../types";
 export function detectFormat(input: string): DataFormat {
   if (!input.trim()) return null;
 
-  // Try parsing as JSON first
+  // Try parsing as JSON first - accept any valid JSON
   try {
-    const parsed = JSON.parse(input);
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      return "json";
-    }
+    JSON.parse(input);
+    return "json";
   } catch {
     // Not valid JSON, might be CSV
   }
@@ -31,30 +29,50 @@ export function detectFormat(input: string): DataFormat {
 
 /**
  * Parse JSON input into rows and columns
+ * Accepts arrays or objects with nested arrays
  */
 export function parseJSON(input: string): ParseResult {
   try {
     const parsed = JSON.parse(input);
 
-    if (!Array.isArray(parsed)) {
+    let dataArray: Array<Record<string, unknown>> = [];
+
+    // If it's already an array, use it
+    if (Array.isArray(parsed)) {
+      dataArray = parsed;
+    }
+    // If it's an object, try to extract array from common patterns
+    else if (parsed && typeof parsed === "object") {
+      // Check for common patterns: { data: [...] }, { results: [...] }, { items: [...] }
+      const possibleKeys = ["data", "results", "items", "records", "rows"];
+      for (const key of possibleKeys) {
+        if (parsed[key] && Array.isArray(parsed[key])) {
+          dataArray = parsed[key];
+          break;
+        }
+      }
+
+      // If no nested array found, wrap the object in an array
+      if (dataArray.length === 0) {
+        dataArray = [parsed];
+      }
+    } else {
+      // Primitive value - wrap in object
+      dataArray = [{ value: parsed }];
+    }
+
+    if (dataArray.length === 0) {
       return {
         success: false,
-        error: "JSON must be an array of objects",
+        error: "No data found to display",
       };
     }
 
-    if (parsed.length === 0) {
-      return {
-        success: false,
-        error: "JSON array is empty",
-      };
-    }
-
-    const columns = Object.keys(parsed[0]);
+    const columns = Object.keys(dataArray[0]);
 
     return {
       success: true,
-      data: parsed,
+      data: dataArray,
       columns,
     };
   } catch (error) {

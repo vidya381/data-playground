@@ -31,20 +31,43 @@ describe("parseJSON", () => {
     expect(result.columns).toEqual(["id", "name"]);
   });
 
-  it("should fail for non-array JSON", () => {
+  it("should wrap single JSON object in array", () => {
     const input = JSON.stringify({ id: 1, name: "Alice" });
     const result = parseJSON(input);
 
-    expect(result.success).toBe(false);
-    expect(result.error).toBe("JSON must be an array of objects");
+    expect(result.success).toBe(true);
+    expect(result.data).toHaveLength(1);
+    expect(result.columns).toEqual(["id", "name"]);
   });
 
-  it("should fail for empty array", () => {
-    const input = JSON.stringify([]);
+  it("should extract array from { data: [...] } pattern", () => {
+    const input = JSON.stringify({
+      data: [
+        { id: 1, name: "Alice" },
+        { id: 2, name: "Bob" },
+      ],
+    });
     const result = parseJSON(input);
 
-    expect(result.success).toBe(false);
-    expect(result.error).toBe("JSON array is empty");
+    expect(result.success).toBe(true);
+    expect(result.data).toHaveLength(2);
+    expect(result.columns).toEqual(["id", "name"]);
+  });
+
+  it("should extract array from { results: [...] } pattern", () => {
+    const input = JSON.stringify({
+      results: [{ id: 1, name: "Alice" }],
+    });
+    const result = parseJSON(input);
+
+    expect(result.success).toBe(true);
+    expect(result.data).toHaveLength(1);
+    expect(result.columns).toEqual(["id", "name"]);
+  });
+
+  it("should detect JSON object format", () => {
+    const input = JSON.stringify({ data: [{ id: 1 }] });
+    expect(detectFormat(input)).toBe("json");
   });
 
   it("should fail for invalid JSON", () => {
