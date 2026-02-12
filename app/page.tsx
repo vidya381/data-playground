@@ -6,6 +6,7 @@ import DataTable from "@/components/DataTable";
 import SchemaPanel from "@/components/SchemaPanel";
 import ColumnSelector from "@/components/ColumnSelector";
 import FilterBuilder from "@/components/FilterBuilder";
+import ExportPanel from "@/components/ExportPanel";
 import {
   ParseResult,
   DataFormat,
@@ -145,6 +146,12 @@ export default function Home() {
                     }
                   />
                 </section>
+
+                {/* Export Panel */}
+                <ExportPanel
+                  data={transformedData}
+                  currentFormat={currentFormat}
+                />
 
                 {/* Schema Panel */}
                 <SchemaPanel schemas={schema} />
