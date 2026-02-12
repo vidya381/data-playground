@@ -32,6 +32,35 @@ export interface ColumnSchema {
   sampleValues?: unknown[];
 }
 
+// Filter operator types
+export type FilterOperator =
+  | "equals"
+  | "notEquals"
+  | "greaterThan"
+  | "lessThan"
+  | "greaterThanOrEqual"
+  | "lessThanOrEqual"
+  | "contains"
+  | "notContains"
+  | "startsWith"
+  | "endsWith"
+  | "isEmpty"
+  | "isNotEmpty";
+
+// Single filter condition
+export interface FilterCondition {
+  id: string;
+  field: string;
+  operator: FilterOperator;
+  value: string;
+}
+
+// Transformation state
+export interface Transformation {
+  selectedColumns: string[]; // Empty = all columns
+  filters: FilterCondition[];
+}
+
 // Main dataset state (will expand in later milestones)
 export interface DataSet {
   rawInput: string;
