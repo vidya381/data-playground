@@ -13,6 +13,25 @@ export interface ParseResult {
   error?: string;
 }
 
+// Column data types
+export type ColumnType =
+  | "string"
+  | "number"
+  | "boolean"
+  | "date"
+  | "null"
+  | "object"
+  | "array"
+  | "mixed";
+
+// Schema information for a column
+export interface ColumnSchema {
+  name: string;
+  type: ColumnType;
+  nullable: boolean;
+  sampleValues?: unknown[];
+}
+
 // Main dataset state (will expand in later milestones)
 export interface DataSet {
   rawInput: string;
