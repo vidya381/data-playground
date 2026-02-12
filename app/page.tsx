@@ -4,25 +4,66 @@ import { useState, useMemo } from "react";
 import Input from "@/components/Input";
 import DataTable from "@/components/DataTable";
 import SchemaPanel from "@/components/SchemaPanel";
-import { ParseResult, DataFormat } from "@/lib/types";
-import { inferSchema } from "@/lib/utils";
+import ColumnSelector from "@/components/ColumnSelector";
+import FilterBuilder from "@/components/FilterBuilder";
+import {
+  ParseResult,
+  DataFormat,
+  FilterCondition,
+  Transformation,
+} from "@/lib/types";
+import { inferSchema, applyTransformations } from "@/lib/utils";
 
 export default function Home() {
   const [parsedData, setParsedData] = useState<ParseResult | null>(null);
   const [currentFormat, setCurrentFormat] = useState<DataFormat>(null);
 
+  // Transformation state
+  const [transformation, setTransformation] = useState<Transformation>({
+    selectedColumns: [],
+    filters: [],
+  });
+
   const handleDataParsed = (result: ParseResult, format: DataFormat) => {
     setParsedData(result);
     setCurrentFormat(format);
+    // Reset transformations when new data is loaded
+    setTransformation({ selectedColumns: [], filters: [] });
   };
 
-  // Infer schema from parsed data
-  const schema = useMemo(() => {
+  // Apply transformations to data
+  const transformedData = useMemo(() => {
     if (parsedData?.success && parsedData.data) {
-      return inferSchema(parsedData.data);
+      return applyTransformations(parsedData.data, transformation);
     }
     return [];
-  }, [parsedData]);
+  }, [parsedData, transformation]);
+
+  // Get columns to display (either selected or all)
+  const displayColumns = useMemo(() => {
+    if (!parsedData?.columns) return [];
+    if (
+      transformation.selectedColumns.length === 0 ||
+      transformation.selectedColumns.length === parsedData.columns.length
+    ) {
+      return parsedData.columns;
+    }
+    return transformation.selectedColumns;
+  }, [parsedData, transformation.selectedColumns]);
+
+  // Infer schema from transformed data
+  const schema = useMemo(() => {
+    if (transformedData.length > 0) {
+      return inferSchema(transformedData);
+    }
+    return [];
+  }, [transformedData]);
+
+  const hasTransformations =
+    transformation.filters.length > 0 ||
+    (transformation.selectedColumns.length > 0 &&
+      transformation.selectedColumns.length !==
+        (parsedData?.columns?.length || 0));
 
   return (
     <main className="min-h-screen p-8">
@@ -39,17 +80,22 @@ export default function Home() {
           <Input onDataParsed={handleDataParsed} />
         </section>
 
-        {/* Preview Section */}
+        {/* Data & Transformations Section */}
         {parsedData?.success && parsedData.data && parsedData.columns ? (
           <div className="space-y-6">
             {/* Stats */}
             <div className="flex items-center gap-4 text-sm text-gray-600">
               <span className="font-semibold">
-                {parsedData.data.length} rows
+                {hasTransformations && (
+                  <span className="text-gray-400 line-through mr-2">
+                    {parsedData.data.length}
+                  </span>
+                )}
+                {transformedData.length} rows
               </span>
               <span>•</span>
               <span className="font-semibold">
-                {parsedData.columns.length} columns
+                {displayColumns.length} columns
               </span>
               {currentFormat && (
                 <>
@@ -59,22 +105,50 @@ export default function Home() {
                   </span>
                 </>
               )}
+              {hasTransformations && (
+                <>
+                  <span>•</span>
+                  <span className="text-orange-600 font-medium">Filtered</span>
+                </>
+              )}
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
+            <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
               {/* Data Table */}
               <section>
                 <h2 className="text-xl font-semibold mb-4">Data</h2>
-                <DataTable
-                  data={parsedData.data}
-                  columns={parsedData.columns}
-                />
+                <DataTable data={transformedData} columns={displayColumns} />
               </section>
 
-              {/* Schema Panel */}
-              <section>
+              {/* Right Sidebar */}
+              <aside className="space-y-6">
+                {/* Transformations */}
+                <section className="space-y-4">
+                  <h2 className="text-xl font-semibold">Transformations</h2>
+
+                  <ColumnSelector
+                    columns={parsedData.columns}
+                    selectedColumns={transformation.selectedColumns}
+                    onChange={(selected) =>
+                      setTransformation((prev) => ({
+                        ...prev,
+                        selectedColumns: selected,
+                      }))
+                    }
+                  />
+
+                  <FilterBuilder
+                    columns={parsedData.columns}
+                    filters={transformation.filters}
+                    onChange={(filters) =>
+                      setTransformation((prev) => ({ ...prev, filters }))
+                    }
+                  />
+                </section>
+
+                {/* Schema Panel */}
                 <SchemaPanel schemas={schema} />
-              </section>
+              </aside>
             </div>
           </div>
         ) : (
