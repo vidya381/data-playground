@@ -20,8 +20,9 @@ function inferValueType(value: unknown): ColumnType {
 
   if (type === "string") {
     // Check if it's a date string
-    const dateTest = new Date(value);
-    if (!isNaN(dateTest.getTime()) && value.match(/^\d{4}-\d{2}-\d{2}/)) {
+    const strValue = value as string;
+    const dateTest = new Date(strValue);
+    if (!isNaN(dateTest.getTime()) && strValue.match(/^\d{4}-\d{2}-\d{2}/)) {
       return "date";
     }
     return "string";
