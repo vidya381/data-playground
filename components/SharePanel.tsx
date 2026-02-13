@@ -80,7 +80,7 @@ export default function SharePanel({
         <button
           onClick={handleSaveAndShare}
           disabled={isLoading || data.length === 0}
-          className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed font-medium transition-colors whitespace-nowrap"
+          className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 disabled:bg-gray-300 disabled:cursor-not-allowed font-medium transition-colors whitespace-nowrap"
         >
           {isLoading ? "Saving..." : "Save & Share"}
         </button>
@@ -103,7 +103,11 @@ export default function SharePanel({
             />
             <button
               onClick={handleCopyLink}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 font-medium transition-colors"
+              className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                isCopied
+                  ? "bg-teal-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
             >
               {isCopied ? "Copied!" : "Copy"}
             </button>

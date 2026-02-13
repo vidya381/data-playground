@@ -115,21 +115,11 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 mb-8">
-        <div className="max-w-7xl mx-auto px-8 py-8">
-          <h1 className="text-4xl font-bold mb-2 text-gray-900">
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Data Playground
           </h1>
-          <p className="text-gray-600 mb-3">
-            Interactive JSON/CSV playground for inspection and conversion
-          </p>
-          <div className="text-sm text-gray-500">
-            <p>
-              <span className="font-medium">1.</span> Load data (paste, upload,
-              or try samples) → <span className="font-medium">2.</span>{" "}
-              Transform (filter, select columns) →{" "}
-              <span className="font-medium">3.</span> Export (download or share)
-            </p>
-          </div>
+          <p className="text-gray-600">Transform and convert JSON/CSV data</p>
         </div>
       </header>
 
@@ -137,8 +127,8 @@ export default function Home() {
         <div className="space-y-6">
           {/* Session Loading/Error */}
           {isLoadingSession && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm">
-              <p className="text-sm text-blue-700">Loading shared session...</p>
+            <div className="bg-teal-50 border border-teal-200 rounded-lg p-4 shadow-sm">
+              <p className="text-sm text-teal-700">Loading shared session...</p>
             </div>
           )}
           {sessionError && (
@@ -172,7 +162,7 @@ export default function Home() {
                 {currentFormat && (
                   <>
                     <span>•</span>
-                    <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">
+                    <span className="px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs font-medium">
                       {currentFormat.toUpperCase()}
                     </span>
                   </>

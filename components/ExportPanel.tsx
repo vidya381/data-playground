@@ -48,7 +48,7 @@ export default function ExportPanel({ data, currentFormat }: ExportPanelProps) {
             onClick={() => setOutputFormat("json")}
             className={`flex-1 px-4 py-2 rounded text-sm font-medium transition-colors ${
               outputFormat === "json"
-                ? "bg-gray-900 text-white"
+                ? "bg-teal-600 text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
@@ -58,7 +58,7 @@ export default function ExportPanel({ data, currentFormat }: ExportPanelProps) {
             onClick={() => setOutputFormat("csv")}
             className={`flex-1 px-4 py-2 rounded text-sm font-medium transition-colors ${
               outputFormat === "csv"
-                ? "bg-gray-900 text-white"
+                ? "bg-teal-600 text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
@@ -86,7 +86,7 @@ export default function ExportPanel({ data, currentFormat }: ExportPanelProps) {
       <div className="space-y-2">
         <button
           onClick={handleDownload}
-          className="w-full px-4 py-2 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800 transition-colors"
+          className="w-full px-4 py-2 bg-teal-600 text-white rounded text-sm font-medium hover:bg-teal-700 transition-colors"
         >
           Download {outputFormat.toUpperCase()}
         </button>
@@ -94,7 +94,7 @@ export default function ExportPanel({ data, currentFormat }: ExportPanelProps) {
           onClick={handleCopy}
           className={`w-full px-4 py-2 rounded text-sm font-medium transition-colors ${
             copied
-              ? "bg-gray-900 text-white"
+              ? "bg-teal-600 text-white"
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
         >
