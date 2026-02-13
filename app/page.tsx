@@ -8,6 +8,7 @@ import SchemaPanel from "@/components/SchemaPanel";
 import ColumnSelector from "@/components/ColumnSelector";
 import FilterBuilder from "@/components/FilterBuilder";
 import ExportPanel from "@/components/ExportPanel";
+import SharePanel from "@/components/SharePanel";
 import {
   ParseResult,
   DataFormat,
@@ -208,6 +209,13 @@ export default function Home() {
                 <ExportPanel
                   data={transformedData}
                   currentFormat={currentFormat}
+                />
+
+                {/* Share Panel */}
+                <SharePanel
+                  data={parsedData.data}
+                  transformations={transformation}
+                  format={currentFormat || "json"}
                 />
 
                 {/* Schema Panel */}
