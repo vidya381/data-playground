@@ -180,15 +180,15 @@ export default function Home() {
               )}
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+            <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
               {/* Data Table */}
-              <section>
+              <section className="min-w-0">
                 <h2 className="text-xl font-semibold mb-4">Data</h2>
                 <DataTable data={transformedData} columns={displayColumns} />
               </section>
 
               {/* Right Sidebar */}
-              <aside className="space-y-6">
+              <aside className="space-y-6 lg:order-last">
                 {/* Transformations */}
                 <section className="space-y-4">
                   <h2 className="text-xl font-semibold">Transformations</h2>
@@ -232,10 +232,10 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <div className="border border-gray-300 rounded-lg p-12 text-center text-gray-400">
-            <p className="text-lg">Paste or upload data to see preview...</p>
-            <p className="text-sm mt-2">
-              Supports JSON arrays, objects, and CSV files
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-16 text-center text-gray-400">
+            <p className="text-lg mb-2">No data loaded yet</p>
+            <p className="text-sm">
+              Paste or upload JSON/CSV data, or try a sample dataset above
             </p>
           </div>
         )}
