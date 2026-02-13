@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Input from "@/components/Input";
 import DataTable from "@/components/DataTable";
 import SchemaPanel from "@/components/SchemaPanel";
@@ -16,14 +17,58 @@ import {
 import { inferSchema, applyTransformations } from "@/lib/utils";
 
 export default function Home() {
+  const searchParams = useSearchParams();
   const [parsedData, setParsedData] = useState<ParseResult | null>(null);
   const [currentFormat, setCurrentFormat] = useState<DataFormat>(null);
+  const [isLoadingSession, setIsLoadingSession] = useState(false);
+  const [sessionError, setSessionError] = useState<string>("");
 
   // Transformation state
   const [transformation, setTransformation] = useState<Transformation>({
     selectedColumns: [],
     filters: [],
   });
+
+  // Load session from URL on mount
+  useEffect(() => {
+    const sessionId = searchParams.get("session");
+    if (!sessionId) return;
+
+    const loadSession = async () => {
+      setIsLoadingSession(true);
+      setSessionError("");
+
+      try {
+        const response = await fetch(`/api/sessions/${sessionId}`);
+        if (!response.ok) {
+          throw new Error("Session not found or expired");
+        }
+
+        const session = await response.json();
+
+        // Set data
+        const columns = Object.keys(session.data[0] || {});
+        setParsedData({
+          success: true,
+          data: session.data,
+          columns,
+          format: session.format as DataFormat,
+        });
+        setCurrentFormat(session.format as DataFormat);
+
+        // Set transformations
+        setTransformation(session.transformations);
+      } catch (error) {
+        setSessionError(
+          error instanceof Error ? error.message : "Failed to load session"
+        );
+      } finally {
+        setIsLoadingSession(false);
+      }
+    };
+
+    loadSession();
+  }, [searchParams]);
 
   const handleDataParsed = (result: ParseResult, format: DataFormat) => {
     setParsedData(result);
@@ -76,6 +121,18 @@ export default function Home() {
       </header>
 
       <div className="space-y-8">
+        {/* Session Loading/Error */}
+        {isLoadingSession && (
+          <div className="max-w-4xl p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-700">Loading shared session...</p>
+          </div>
+        )}
+        {sessionError && (
+          <div className="max-w-4xl p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-700">{sessionError}</p>
+          </div>
+        )}
+
         {/* Input Section */}
         <section className="max-w-4xl">
           <Input onDataParsed={handleDataParsed} />
