@@ -113,12 +113,20 @@ export default function Home() {
         (parsedData?.columns?.length || 0));
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-8 max-w-7xl mx-auto">
       <header className="mb-8">
         <h1 className="text-4xl font-bold mb-2">Data Playground</h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 mb-4">
           Interactive JSON/CSV playground for inspection and conversion
         </p>
+        <div className="text-sm text-gray-500 space-y-1">
+          <p>
+            <span className="font-medium">1.</span> Load data (paste, upload, or
+            try samples) → <span className="font-medium">2.</span> Transform
+            (filter, select columns) → <span className="font-medium">3.</span>{" "}
+            Export (download or share)
+          </p>
+        </div>
       </header>
 
       <div className="space-y-8">
