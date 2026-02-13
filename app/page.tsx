@@ -113,124 +113,138 @@ export default function Home() {
         (parsedData?.columns?.length || 0));
 
   return (
-    <main className="min-h-screen p-8">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Data Playground</h1>
-        <p className="text-gray-600">
-          Interactive JSON/CSV playground for inspection and conversion
-        </p>
+    <main className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200 mb-8">
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Data Playground
+          </h1>
+          <p className="text-gray-600">Transform and convert JSON/CSV data</p>
+        </div>
       </header>
 
-      <div className="space-y-8">
-        {/* Session Loading/Error */}
-        {isLoadingSession && (
-          <div className="max-w-4xl p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-700">Loading shared session...</p>
-          </div>
-        )}
-        {sessionError && (
-          <div className="max-w-4xl p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-700">{sessionError}</p>
-          </div>
-        )}
-
-        {/* Input Section */}
-        <section className="max-w-4xl">
-          <Input onDataParsed={handleDataParsed} />
-        </section>
-
-        {/* Data & Transformations Section */}
-        {parsedData?.success && parsedData.data && parsedData.columns ? (
-          <div className="space-y-6">
-            {/* Stats */}
-            <div className="flex items-center gap-4 text-sm text-gray-600">
-              <span className="font-semibold">
-                {hasTransformations && (
-                  <span className="text-gray-400 line-through mr-2">
-                    {parsedData.data.length}
-                  </span>
-                )}
-                {transformedData.length} rows
-              </span>
-              <span>•</span>
-              <span className="font-semibold">
-                {displayColumns.length} columns
-              </span>
-              {currentFormat && (
-                <>
-                  <span>•</span>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
-                    {currentFormat.toUpperCase()}
-                  </span>
-                </>
-              )}
-              {hasTransformations && (
-                <>
-                  <span>•</span>
-                  <span className="text-orange-600 font-medium">Filtered</span>
-                </>
-              )}
+      <div className="max-w-7xl mx-auto px-8 pb-12">
+        <div className="space-y-6">
+          {/* Session Loading/Error */}
+          {isLoadingSession && (
+            <div className="bg-teal-50 border border-teal-200 rounded-lg p-4 shadow-sm">
+              <p className="text-sm text-teal-700">Loading shared session...</p>
             </div>
+          )}
+          {sessionError && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 shadow-sm">
+              <p className="text-sm text-red-700">{sessionError}</p>
+            </div>
+          )}
 
-            <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-              {/* Data Table */}
-              <section>
-                <h2 className="text-xl font-semibold mb-4">Data</h2>
-                <DataTable data={transformedData} columns={displayColumns} />
-              </section>
+          {/* Input Section */}
+          <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <Input onDataParsed={handleDataParsed} />
+          </section>
 
-              {/* Right Sidebar */}
-              <aside className="space-y-6">
-                {/* Transformations */}
-                <section className="space-y-4">
-                  <h2 className="text-xl font-semibold">Transformations</h2>
+          {/* Data & Transformations Section */}
+          {parsedData?.success && parsedData.data && parsedData.columns ? (
+            <div className="space-y-6">
+              {/* Stats */}
+              <div className="flex items-center gap-4 text-sm text-gray-600 px-1">
+                <span className="font-semibold">
+                  {hasTransformations && (
+                    <span className="text-gray-400 line-through mr-2">
+                      {parsedData.data.length}
+                    </span>
+                  )}
+                  {transformedData.length} rows
+                </span>
+                <span>•</span>
+                <span className="font-semibold">
+                  {displayColumns.length} columns
+                </span>
+                {currentFormat && (
+                  <>
+                    <span>•</span>
+                    <span className="px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs font-medium">
+                      {currentFormat.toUpperCase()}
+                    </span>
+                  </>
+                )}
+                {hasTransformations && (
+                  <>
+                    <span>•</span>
+                    <span className="text-gray-700 font-medium">Filtered</span>
+                  </>
+                )}
+              </div>
 
-                  <ColumnSelector
-                    columns={parsedData.columns}
-                    selectedColumns={transformation.selectedColumns}
-                    onChange={(selected) =>
-                      setTransformation((prev) => ({
-                        ...prev,
-                        selectedColumns: selected,
-                      }))
-                    }
-                  />
-
-                  <FilterBuilder
-                    columns={parsedData.columns}
-                    filters={transformation.filters}
-                    onChange={(filters) =>
-                      setTransformation((prev) => ({ ...prev, filters }))
-                    }
-                  />
+              <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+                {/* Data Table */}
+                <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 min-w-0">
+                  <h2 className="text-xl font-semibold mb-4 text-gray-900">
+                    Data
+                  </h2>
+                  <DataTable data={transformedData} columns={displayColumns} />
                 </section>
 
-                {/* Export Panel */}
-                <ExportPanel
-                  data={transformedData}
-                  currentFormat={currentFormat}
-                />
+                {/* Right Sidebar */}
+                <aside className="space-y-6 lg:order-last">
+                  {/* Transformations */}
+                  <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-4">
+                    <h2 className="text-xl font-semibold text-gray-900">
+                      Transformations
+                    </h2>
 
-                {/* Share Panel */}
-                <SharePanel
-                  data={parsedData.data}
-                  transformations={transformation}
-                  format={currentFormat || "json"}
-                />
+                    <ColumnSelector
+                      columns={parsedData.columns}
+                      selectedColumns={transformation.selectedColumns}
+                      onChange={(selected) =>
+                        setTransformation((prev) => ({
+                          ...prev,
+                          selectedColumns: selected,
+                        }))
+                      }
+                    />
 
-                {/* Schema Panel */}
-                <SchemaPanel schemas={schema} />
-              </aside>
+                    <FilterBuilder
+                      columns={parsedData.columns}
+                      filters={transformation.filters}
+                      onChange={(filters) =>
+                        setTransformation((prev) => ({ ...prev, filters }))
+                      }
+                    />
+                  </section>
+
+                  {/* Export Panel */}
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                    <ExportPanel
+                      data={transformedData}
+                      currentFormat={currentFormat}
+                    />
+                  </div>
+
+                  {/* Share Panel */}
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                    <SharePanel
+                      data={parsedData.data}
+                      transformations={transformation}
+                      format={currentFormat || "json"}
+                    />
+                  </div>
+
+                  {/* Schema Panel */}
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <SchemaPanel schemas={schema} />
+                  </div>
+                </aside>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="border border-gray-300 rounded-lg p-12 text-center text-gray-400">
-            <p className="text-lg">Paste or upload data to see preview...</p>
-            <p className="text-sm mt-2">
-              Supports JSON arrays, objects, and CSV files
-            </p>
-          </div>
-        )}
+          ) : (
+            <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-16 text-center text-gray-400 shadow-sm">
+              <p className="text-lg mb-2">No data loaded yet</p>
+              <p className="text-sm">
+                Paste or upload JSON/CSV data, or try a sample dataset above
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </main>
   );

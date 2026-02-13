@@ -69,18 +69,18 @@ export default function SharePanel({
   };
 
   return (
-    <div className="space-y-4 p-4 bg-white rounded-lg border border-gray-200">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 p-6">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">Share Session</h3>
-          <p className="text-sm text-gray-600">
+          <h3 className="font-semibold text-gray-900">Share Session</h3>
+          <p className="text-sm text-gray-600 mt-1">
             Create a shareable link (expires in 7 days)
           </p>
         </div>
         <button
           onClick={handleSaveAndShare}
           disabled={isLoading || data.length === 0}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed font-medium transition-colors"
+          className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 disabled:bg-gray-300 disabled:cursor-not-allowed font-medium transition-colors whitespace-nowrap"
         >
           {isLoading ? "Saving..." : "Save & Share"}
         </button>
@@ -103,7 +103,11 @@ export default function SharePanel({
             />
             <button
               onClick={handleCopyLink}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 font-medium transition-colors"
+              className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                isCopied
+                  ? "bg-teal-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
             >
               {isCopied ? "Copied!" : "Copy"}
             </button>
