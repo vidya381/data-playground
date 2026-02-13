@@ -3,6 +3,7 @@
 import { useState, ChangeEvent } from "react";
 import { detectFormat, parseJSON, parseCSV } from "@/lib/utils";
 import { DataFormat, ParseResult } from "@/lib/types";
+import { sampleDatasets } from "@/lib/samples";
 
 interface InputProps {
   onDataParsed: (result: ParseResult, format: DataFormat) => void;
@@ -82,6 +83,35 @@ export default function Input({ onDataParsed }: InputProps) {
     reader.readAsText(file);
   };
 
+  const handleLoadSample = (e: ChangeEvent<HTMLSelectElement>) => {
+    const sampleName = e.target.value;
+    if (!sampleName) return;
+
+    const sample = sampleDatasets.find((s) => s.name === sampleName);
+    if (!sample) return;
+
+    setInputText(sample.data);
+    setError(null);
+
+    const format = detectFormat(sample.data);
+    setDetectedFormat(format);
+
+    if (format === "json") {
+      const result = parseJSON(sample.data);
+      if (result.success) {
+        onDataParsed(result, format);
+      }
+    } else if (format === "csv") {
+      const result = parseCSV(sample.data);
+      if (result.success) {
+        onDataParsed(result, format);
+      }
+    }
+
+    // Reset dropdown
+    e.target.value = "";
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -101,12 +131,12 @@ export default function Input({ onDataParsed }: InputProps) {
           className="w-full h-64 p-4 border border-gray-300 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 flex-wrap">
           <label
             htmlFor="file-upload"
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg cursor-pointer transition-colors"
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg cursor-pointer transition-colors text-sm"
           >
-            📁 Upload File
+            Upload File
           </label>
           <input
             id="file-upload"
@@ -115,7 +145,18 @@ export default function Input({ onDataParsed }: InputProps) {
             onChange={handleFileUpload}
             className="hidden"
           />
-          <span className="text-sm text-gray-500">or paste directly above</span>
+          <span className="text-gray-400">or</span>
+          <select
+            onChange={handleLoadSample}
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg cursor-pointer transition-colors text-sm border-none outline-none"
+          >
+            <option value="">Load Sample Data</option>
+            {sampleDatasets.map((sample) => (
+              <option key={sample.name} value={sample.name}>
+                {sample.name} - {sample.description}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
