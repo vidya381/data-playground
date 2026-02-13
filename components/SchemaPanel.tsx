@@ -5,14 +5,14 @@ interface SchemaPanelProps {
 }
 
 const typeColors: Record<string, string> = {
-  string: "bg-blue-100 text-blue-800",
-  number: "bg-green-100 text-green-800",
-  boolean: "bg-purple-100 text-purple-800",
-  date: "bg-orange-100 text-orange-800",
+  string: "bg-gray-100 text-gray-700",
+  number: "bg-gray-100 text-gray-700",
+  boolean: "bg-gray-100 text-gray-700",
+  date: "bg-gray-100 text-gray-700",
   null: "bg-gray-100 text-gray-600",
-  object: "bg-yellow-100 text-yellow-800",
-  array: "bg-pink-100 text-pink-800",
-  mixed: "bg-red-100 text-red-800",
+  object: "bg-gray-100 text-gray-700",
+  array: "bg-gray-100 text-gray-700",
+  mixed: "bg-gray-100 text-gray-700",
 };
 
 export default function SchemaPanel({ schemas }: SchemaPanelProps) {
