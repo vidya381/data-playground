@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Input from "@/components/Input";
 import DataTable from "@/components/DataTable";
@@ -17,7 +17,7 @@ import {
 } from "@/lib/types";
 import { inferSchema, applyTransformations } from "@/lib/utils";
 
-export default function Home() {
+function HomeContent() {
   const searchParams = useSearchParams();
   const [parsedData, setParsedData] = useState<ParseResult | null>(null);
   const [currentFormat, setCurrentFormat] = useState<DataFormat>(null);
@@ -246,5 +246,13 @@ export default function Home() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50" />}>
+      <HomeContent />
+    </Suspense>
   );
 }

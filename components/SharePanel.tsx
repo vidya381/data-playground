@@ -1,17 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { Transformation } from "@/lib/types";
 
 interface SharePanelProps {
   data: Record<string, unknown>[];
-  transformations: {
-    selectedColumns: string[];
-    filters: Array<{
-      column: string;
-      operator: string;
-      value: string | string[];
-    }>;
-  };
+  transformations: Transformation;
   format: string;
 }
 
