@@ -53,7 +53,6 @@ export default function Home() {
           success: true,
           data: session.data,
           columns,
-          format: session.format as DataFormat,
         });
         setCurrentFormat(session.format as DataFormat);
 
